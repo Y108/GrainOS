@@ -1,4 +1,3 @@
-
 struct File {
     String name;
     String content;
@@ -99,7 +98,7 @@ void loop() {
             String name = input.substring(5); // This is your cat, but this was simpler to write, fuck it
             readFile(name);
         } 
-        else if (input.startsWith("rm ")) {
+        else if (input.startsWith("delete ")) {
             String name = input.substring(7); //deletes files (has no flags)
             deleteFile(name);
         } 
