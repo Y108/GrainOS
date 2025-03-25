@@ -7,13 +7,11 @@ struct File {
 const int MAX_FILES = 10;  //file limit
 File files[MAX_FILES];     
 
-
 void clearScreen() {
     for (int i = 0; i < 50; i++) {
         Serial.println();         //function that clears your screen (again this is stupid)
     }
 }
-
 
 void listFiles() {
     Serial.println("Files:");
@@ -23,7 +21,6 @@ void listFiles() {
         }
     }
 }
-
 
 void writeFile(String name, String content) {
     for (int i = 0; i < MAX_FILES; i++) {
@@ -48,7 +45,6 @@ void readFile(String name) {
     Serial.println("Error: File not found!");
 }
 
-
 void deleteFile(String name) {
     for (int i = 0; i < MAX_FILES; i++) {
         if (files[i].used && files[i].name == name) {
@@ -58,6 +54,18 @@ void deleteFile(String name) {
         }
     }
     Serial.println("Error: File not found!"); // WAH WAH WAH 
+}
+
+void showHelp() {
+    Serial.println("Available commands:");
+    Serial.println("  clear - Clears the screen");
+    Serial.println("  echo <message> - Prints the message");
+    Serial.println("  format(\"text,text,text\") - Formats input");
+    Serial.println("  write <filename> <content> - Writes content to a file");
+    Serial.println("  read <filename> - Reads and prints the content of a file");
+    Serial.println("  delete <filename> - Deletes a file");
+    Serial.println("  ls - Lists all files");
+    Serial.println("  help - Displays this help message");
 }
 
 void setup() {
@@ -74,7 +82,6 @@ void loop() {
         }
         else if (input.startsWith("echo ")) {
             String message = input.substring(5); // It's just echo with less functionality
-
             message.trim();
             Serial.println(message);
         }
@@ -105,8 +112,11 @@ void loop() {
         else if (input == "ls") { //list files (currently directories don't exist (and let's be real probably won't))
             listFiles();
         } 
+        else if (input == "help") { // help command
+            showHelp();
+        }
         else {
-            Serial.println("Unknown command.");
+            Serial.println("Unknown command. Use 'help' to get a list of commands");
         }
     }
 }
