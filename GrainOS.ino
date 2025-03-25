@@ -58,20 +58,17 @@ void deleteFile(String name) {
 
 void showHelp() { //I think this is fairly self explanatory, but still, making sure. It's just the guts of the `help` command
     Serial.println("Available commands:");
-    Serial.println("  clear - Clears the screen"); //1
-    Serial.println("  echo <message> - Prints the message"); // 2
-    Serial.println("  format(\"text,text,text\") - Formats input"); // 3
-    Serial.println("  write <filename> <content> - Writes content to a file"); // 4
-    Serial.println("  read <filename> - Reads and prints the content of a file"); // 5
-    Serial.println("  delete <filename> - Deletes a file"); // 6
-    Serial.println("  ls - Lists all files"); // 7
-    Serial.println("  help - Displays this help message"); // 8
-    Serial.println("  calc <number> <operator> <number> - calculates command"); // 9
-    Serial.println("  run <script.gs> - Runs a script file"); // 10
-    Serial.println("  loop <number> <command> - Loops a command the inputted amount of times"); // 11
-    Serial.println("  high <pin-number> - sets the inputted pin to high");// 12
-    Serial.println("  low <pin-number> - sets the inputted pin to low"); //13
-
+    Serial.println("  clear - Clears the screen");
+    Serial.println("  echo <message> - Prints the message");
+    Serial.println("  format(\"text,text,text\") - Formats input");
+    Serial.println("  write <filename> <content> - Writes content to a file");
+    Serial.println("  read <filename> - Reads and prints the content of a file");
+    Serial.println("  delete <filename> - Deletes a file");
+    Serial.println("  ls - Lists all files");
+    Serial.println("  help - Displays this help message");
+    Serial.println("  calc <number> <operator> <number> - calculates command");
+    Serial.println("  run <script.gs> - Runs a script file");
+    Serial.println("  loop <number> <command> - Loops a command the inputted amout of times");
 }
 
 void calculate(String input) {
