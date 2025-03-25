@@ -68,6 +68,7 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
     Serial.println("  help - Displays this help message");
     Serial.println("  calc <number> <operator> <number> - calculates command");
     Serial.println("  run <script.gs> - Runs a script file");
+    Serial.println("  loop <number> <command> - Loops a command the inputted amout of times");
 }
 
 void calculate(String input) {
