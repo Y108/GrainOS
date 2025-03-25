@@ -67,6 +67,7 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
     Serial.println("  ls - Lists all files");
     Serial.println("  help - Displays this help message");
     Serial.println("  calc <number> <operator> <number> - calculates command");
+    Serial.println("  run <script.gs> - Runs a script file");
 }
 
 void calculate(String input) {
@@ -110,58 +111,143 @@ void calculate(String input) {
     Serial.println(String(result));
 }
 
+void runScript(String name) { //script interpreter!
+    if (!name.endsWith(".gs")) {
+        Serial.println("Error: Scripts must end with a .gs extension!");
+        return;
+    }
+
+    for (int i = 0; i < MAX_FILES; i++) {
+        if (files[i].used && files[i].name == name) {
+            Serial.println("Running script: " + name);
+            String content = files[i].content;
+
+       
+            content.replace("\\n", "\n"); 
+
+            int start = 0;
+            while (start < content.length()) {
+                int end = content.indexOf('\n', start);
+                if (end == -1) end = content.length();
+
+                String command = content.substring(start, end);
+                command.trim();
+
+                Serial.print("Extracted Command: [");
+                Serial.print(command);
+                Serial.println("]");
+
+                if (command.length() > 0) {
+                    Serial.println("> " + command);
+                    processCommand(command);
+                }
+
+                start = end + 1;
+            }
+            return;
+        }
+    }
+
+    Serial.println("Error: No script found.");
+}
+
+void loopCommand(String input) {
+    int firstSpace = input.indexOf(' ');
+    if (firstSpace == -1) {
+        Serial.println("Usage: loop <number> <command>");
+        return;
+    }
+
+    String numStr = input.substring(0, firstSpace); // loop command !
+    String command = input.substring(firstSpace + 1);
+    
+    int times = numStr.toInt();
+    
+    if (times <= 0) {
+        Serial.println("Error: Loop count must be a positive number.");
+        return;
+    }
+
+    for (int i = 0; i < times; i++) {
+        processCommand(command);
+    }
+}
+
+
+
+
+
+void processCommand(String input) {
+    input.trim();
+
+    if (input == "clear") {
+        clearScreen();
+    }
+    else if (input.startsWith("echo ")) {
+        String message = input.substring(5);
+        message.trim();
+        Serial.println(message);
+    }
+    else if (input.startsWith("format(") && input.endsWith(")")) {
+        input = input.substring(7, input.length() - 1);
+        input.replace("\"", "");
+        input.replace(",", " ");
+        Serial.println(input);
+    }
+    else if (input.startsWith("write ")) {
+        int space = input.indexOf(' ', 6);
+        if (space != -1) {
+            String name = input.substring(6, space);
+            String content = input.substring(space + 1);
+            writeFile(name, content);
+        } else {
+            Serial.println("Usage: write <filename> <content>");
+        }
+    } 
+    else if (input.startsWith("read ")) {
+        String name = input.substring(5);
+        readFile(name);
+    } 
+    else if (input.startsWith("delete ")) {
+        String name = input.substring(7);
+        deleteFile(name);
+    } 
+    else if (input == "ls") {
+        listFiles();
+    } 
+    else if (input == "help") {
+        showHelp();
+    }
+    else if (input.startsWith("calc ")) {
+        calculate(input.substring(5));
+    }
+    else if (input == "cat"){
+        Serial.println(" /\\_/\\");
+        Serial.println("( o.o )");
+        Serial.println("/> ^ <\\");
+    }
+    else if (input.startsWith("loop ")) {
+        loopCommand(input.substring(5));
+    }
+    else {
+        Serial.println("Unknown command " + input + ", for a list of commands type 'help'"); //changed this because I realized It makes more sense
+    }
+}
+
 void setup() {
     Serial.begin(9600);
 }
 
-void loop() {
+void loop() { //the script runner :)
     if (Serial.available()) {
-        String input = Serial.readStringUntil('\n');
+        String input = Serial.readStringUntil(' \n');
         input.trim();
 
-        if (input == "clear") {
-            clearScreen(); //clears screen (very scuffed)
-        }
-        else if (input.startsWith("echo ")) {
-            String message = input.substring(5); // It's just echo with less functionality
-            message.trim();
-            Serial.println(message);
-        }
-        else if (input.startsWith("format(") && input.endsWith(")")) {
-            input = input.substring(7, input.length() - 1);
-            input.replace("\"", ""); //Formatting for Yasmina :)
-            input.replace(",", " ");
-            Serial.println(input);
-        }
-        else if (input.startsWith("write ")) {
-            int space = input.indexOf(' ', 6);
-            if (space != -1) {
-                String name = input.substring(6, space); // writes to files, I didn't know what to call this command so just write, fuck It
-                String content = input.substring(space + 1);
-                writeFile(name, content);
-            } else {
-                Serial.println("Usage: write <filename> <content>");
-            }
-        } 
-        else if (input.startsWith("read ")) {
-            String name = input.substring(5); // This is your cat, but this was simpler to write, fuck it
-            readFile(name);
-        } 
-        else if (input.startsWith("delete ")) {
-            String name = input.substring(7); //deletes files (has no flags)
-            deleteFile(name);
-        } 
-        else if (input == "ls") { //list files (currently directories don't exist (and let's be real probably won't))
-            listFiles();
-        } 
-        else if (input == "help") { // help command
-            showHelp();
-        }
-        else if (input.startsWith("calc ")) {
-            calculate(input.substring(5));
-        }
-        else {
-            Serial.println("Unknown command. Use 'help' to get a list of commands");
+        if (input.startsWith("run ")) {
+            String scriptName = input.substring(4);
+            runScript(scriptName);
+        } else {
+            processCommand(input);
         }
     }
 }
