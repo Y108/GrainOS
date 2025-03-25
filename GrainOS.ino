@@ -4,7 +4,7 @@ struct File {
     bool used;
 };
 
-const int MAX_FILES = 10;  //file limit
+const int MAX_FILES = 5;  //file limit
 File files[MAX_FILES];     
 
 void clearScreen() {
@@ -69,6 +69,8 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
     Serial.println("  calc <number> <operator> <number> - calculates command");
     Serial.println("  run <script.gs> - Runs a script file");
     Serial.println("  loop <number> <command> - Loops a command the inputted amout of times");
+    //Serial.println("  high <pin-number> - sets the inputted pin to high");// 12
+    //Serial.println("  low <pin-number> - sets the inputted pin to low"); //13
 }
 
 void calculate(String input) {
@@ -114,7 +116,7 @@ void calculate(String input) {
 
 void runScript(String name) { //script interpreter!
     if (!name.endsWith(".gs")) {
-        Serial.println("Error: Scripts must end with a .gs extension!");
+        Serial.println("Must end with .gs!");
         return;
     }
 
@@ -155,7 +157,7 @@ void runScript(String name) { //script interpreter!
 void loopCommand(String input) {
     int firstSpace = input.indexOf(' ');
     if (firstSpace == -1) {
-        Serial.println("Usage: loop <number> <command>");
+        Serial.println("Use `help`");
         return;
     }
 
@@ -165,7 +167,7 @@ void loopCommand(String input) {
     int times = numStr.toInt();
     
     if (times <= 0) {
-        Serial.println("Error: Loop count must be a positive number.");
+        Serial.println("Must be positive number");
         return;
     }
 
@@ -224,7 +226,7 @@ void processCommand(String input) {
             String content = input.substring(space + 1);
             writeFile(name, content);
         } else {
-            Serial.println("Usage: write <filename> <content>");
+            Serial.println("use `help`");
         }
     } 
     else if (input.startsWith("read ")) {
@@ -259,12 +261,14 @@ void processCommand(String input) {
       setPinLow(input.substring(4));
     }
     else {
-        Serial.println("Unknown command " + input + ", for a list of commands type 'help'"); //changed this because I realized It makes more sense
+        Serial.println("Unknown command " + input); //changed this because I realized It makes more sense
     }
 }
 
 void setup() {
     Serial.begin(9600);
+    delay(500);
+    Serial.println("Welcome to GrainOS 1.8.3, `help` for a list of commands");
 }
 
 void loop() { //the script runner :)
