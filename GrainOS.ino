@@ -56,7 +56,7 @@ void deleteFile(String name) {
     Serial.println("Error: File not found!"); // WAH WAH WAH 
 }
 
-void showHelp() {
+void showHelp() { //I think this is fairly self explanatory, but still, making sure. It's just the guts of the `help` command
     Serial.println("Available commands:");
     Serial.println("  clear - Clears the screen");
     Serial.println("  echo <message> - Prints the message");
@@ -66,6 +66,48 @@ void showHelp() {
     Serial.println("  delete <filename> - Deletes a file");
     Serial.println("  ls - Lists all files");
     Serial.println("  help - Displays this help message");
+    Serial.println("  calc <number> <operator> <number> - calculates command");
+}
+
+void calculate(String input) {
+    int firstSpace = input.indexOf(' ');
+    int secondSpace = input.indexOf(' ', firstSpace + 1); // this is likely not the best way to do this as It takes up a *lot* of space, but hey. It works. I'll see If I keep It.
+
+    if (firstSpace == -1 || secondSpace == -1) {
+        Serial.println("Usage: calc <number> <operator> <number>");
+        return;
+    }
+
+    String num1Str = input.substring(0, firstSpace);
+    String op = input.substring(firstSpace + 1, secondSpace);
+    String num2Str = input.substring(secondSpace + 1);
+
+    float num1 = num1Str.toFloat();
+    float num2 = num2Str.toFloat();
+    float result;
+
+    if (op == "+") {
+        result = num1 + num2;
+    } 
+    else if (op == "-") {
+        result = num1 - num2;
+    } 
+    else if (op == "*") {
+        result = num1 * num2;
+    } 
+    else if (op == "/") {
+        if (num2 == 0) {
+            Serial.println("Error: Division by zero");
+            return;
+        }
+        result = num1 / num2;
+    } 
+    else {
+        Serial.println("Error: Unknown operator. Use +, -, *, or /");
+        return;
+    }
+
+    Serial.println(String(result));
 }
 
 void setup() {
@@ -114,6 +156,9 @@ void loop() {
         } 
         else if (input == "help") { // help command
             showHelp();
+        }
+        else if (input.startsWith("calc ")) {
+            calculate(input.substring(5));
         }
         else {
             Serial.println("Unknown command. Use 'help' to get a list of commands");
