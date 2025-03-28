@@ -192,7 +192,7 @@ void setPinHigh(String input) {
   if (pin >= 0){
     pinMode(pin, OUTPUT);
     digitalWrite(pin, HIGH);
-    Serial.println("Pin" + String(pin) + " set to LOW");
+    Serial.println("Pin " + String(pin) + " set to HIGH");
 
   } else {
     Serial.println("Invalid pin number");
