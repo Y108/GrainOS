@@ -82,24 +82,24 @@ void calculate(const String& input) {
         return;
     }
 
+    char op = input.charAT(firstSpace + 1);
     String num1Str = input.substring(0, firstSpace);
-    String op = input.substring(firstSpace + 1, secondSpace);
     String num2Str = input.substring(secondSpace + 1);
 
     float num1 = num1Str.toFloat();
     float num2 = num2Str.toFloat();
     float result;
 
-    if (op == "+") {
+    if (op == '+') {
         result = num1 + num2;
     }
-    else if (op == "-") {
+    else if (op == '-') {
         result = num1 - num2;
     }
-    else if (op == "*") {
+    else if (op == '*') {
         result = num1 * num2;
     }
-    else if (op == "/") {
+    else if (op == '/') {
         if (num2 == 0) {
             Serial.println("Error: Division by zero");
             return;
