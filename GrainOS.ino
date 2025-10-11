@@ -4,7 +4,7 @@ struct File {
     bool used;
 };
 
-const int MAX_FILES = 5;  //file limit
+constexpr int MAX_FILES = 5;  //file limit
 File files[MAX_FILES];
 
 void clearScreen() {
