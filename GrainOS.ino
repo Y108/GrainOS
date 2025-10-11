@@ -4,30 +4,30 @@ struct File {
     bool used;
 };
 
-const int MAX_FILES = 5;  //file limit
-File files[MAX_FILES];     
+constexpr int MAX_FILES = 5;  //file limit
+File files[MAX_FILES];
 
 void clearScreen() {
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 50; ++i) {
         Serial.println();         //function that clears your screen (again this is stupid)
     }
 }
 
 void listFiles() {
     Serial.println("Files:");
-    for (int i = 0; i < MAX_FILES; i++) {
-        if (files[i].used) {                    //FUNCTION THAT MAKES LS WORK
-            Serial.println("- " + files[i].name);
+    for (const File& file : files) {
+        if (file.used) {                    //FUNCTION THAT MAKES LS WORK
+            Serial.println("- " + file.name);
         }
     }
 }
 
-void writeFile(String name, String content) {
-    for (int i = 0; i < MAX_FILES; i++) {
-        if (!files[i].used) {  
-            files[i].name = name;               //function that writes to file
-            files[i].content = content;
-            files[i].used = true;
+void writeFile(const String& name, const String& content) {
+    for (File& file: files) {
+        if (!file.used) {
+            file.name = name;               //function that writes to file
+            file.content = content;
+            file.used = true;
             Serial.println("File written: " + name);
             return;
         }
@@ -35,25 +35,25 @@ void writeFile(String name, String content) {
     Serial.println("Error: No space left in RAM!");
 }
 
-void readFile(String name) {
-    for (int i = 0; i < MAX_FILES; i++) {
-        if (files[i].used && files[i].name == name) {
-            Serial.println("Content of " + name + ": " + files[i].content); //function that reads written files
+void readFile(const String& name) {
+    for (const File& file : files) {
+        if (file.used && file.name == name) {
+            Serial.println("Content of " + name + ": " + file.content); //function that reads written files
             return;
         }
     }
     Serial.println("Error: File not found!");
 }
 
-void deleteFile(String name) {
-    for (int i = 0; i < MAX_FILES; i++) {
-        if (files[i].used && files[i].name == name) {
-            files[i].used = false;  // Marks files as deleted
+void deleteFile(const String& name) {
+    for (File& file : files) {
+        if (file.used && file.name == name) {
+            file.used = false;  // Marks files as deleted
             Serial.println("Deleted file: " + name);
             return;
         }
     }
-    Serial.println("Error: File not found!"); // WAH WAH WAH 
+    Serial.println("Error: File not found!"); // WAH WAH WAH
 }
 
 void showHelp() { //I think this is fairly self explanatory, but still, making sure. It's just the guts of the `help` command
@@ -73,7 +73,7 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
     //Serial.println("  low <pin-number> - sets the inputted pin to low"); //13
 }
 
-void calculate(String input) {
+void calculate(const String& input) {
     int firstSpace = input.indexOf(' ');
     int secondSpace = input.indexOf(' ', firstSpace + 1); // this is likely not the best way to do this as It takes up a *lot* of space, but hey. It works. I'll see If I keep It.
 
@@ -82,30 +82,30 @@ void calculate(String input) {
         return;
     }
 
+    char op = input.charAT(firstSpace + 1);
     String num1Str = input.substring(0, firstSpace);
-    String op = input.substring(firstSpace + 1, secondSpace);
     String num2Str = input.substring(secondSpace + 1);
 
     float num1 = num1Str.toFloat();
     float num2 = num2Str.toFloat();
     float result;
 
-    if (op == "+") {
+    if (op == '+') {
         result = num1 + num2;
-    } 
-    else if (op == "-") {
+    }
+    else if (op == '-') {
         result = num1 - num2;
-    } 
-    else if (op == "*") {
+    }
+    else if (op == '*') {
         result = num1 * num2;
-    } 
-    else if (op == "/") {
+    }
+    else if (op == '/') {
         if (num2 == 0) {
             Serial.println("Error: Division by zero");
             return;
         }
         result = num1 / num2;
-    } 
+    }
     else {
         Serial.println("Error: Unknown operator. Use +, -, *, or /");
         return;
@@ -114,19 +114,18 @@ void calculate(String input) {
     Serial.println(String(result));
 }
 
-void runScript(String name) { //script interpreter!
+void runScript(const String& name) { //script interpreter!
     if (!name.endsWith(".gs")) {
         Serial.println("Must end with .gs!");
         return;
     }
 
-    for (int i = 0; i < MAX_FILES; i++) {
-        if (files[i].used && files[i].name == name) {
+    for (const File& file : files) {
+        if (file.used && file.name == name) {
             Serial.println("Running script: " + name);
-            String content = files[i].content;
-
-       
-            content.replace("\\n", "\n"); 
+            String content = file.content;
+            
+            content.replace("\\n", "\n");
 
             int start = 0;
             while (start < content.length()) {
@@ -154,7 +153,7 @@ void runScript(String name) { //script interpreter!
     Serial.println("Error: No script found.");
 }
 
-void loopCommand(String input) {
+void loopCommand(const String& input) {
     int firstSpace = input.indexOf(' ');
     if (firstSpace == -1) {
         Serial.println("Use `help`");
@@ -163,9 +162,9 @@ void loopCommand(String input) {
 
     String numStr = input.substring(0, firstSpace); // loop command !
     String command = input.substring(firstSpace + 1);
-    
+
     int times = numStr.toInt();
-    
+
     if (times <= 0) {
         Serial.println("Must be positive number");
         return;
@@ -176,7 +175,7 @@ void loopCommand(String input) {
     }
 }
 
-void setPinLow(String input) {
+void setPinLow(const String& input) {
     int pin = input.toInt();
     if (pin >= 0) {
         pinMode(pin, OUTPUT);
@@ -187,7 +186,7 @@ void setPinLow(String input) {
     }
 }
 
-void setPinHigh(String input) {
+void setPinHigh(const String& input) {
   int pin = input.toInt();
   if (pin >= 0){
     pinMode(pin, OUTPUT);
@@ -200,9 +199,7 @@ void setPinHigh(String input) {
 
 }
 
-
-
-void processCommand(String input) {
+void processCommand(const String& input) {
     input.trim();
 
     if (input == "clear") {
@@ -228,18 +225,18 @@ void processCommand(String input) {
         } else {
             Serial.println("use `help`");
         }
-    } 
+    }
     else if (input.startsWith("read ")) {
         String name = input.substring(5);
         readFile(name);
-    } 
+    }
     else if (input.startsWith("delete ")) {
         String name = input.substring(7);
         deleteFile(name);
-    } 
+    }
     else if (input == "ls") {
         listFiles();
-    } 
+    }
     else if (input == "help") {
         showHelp();
     }
