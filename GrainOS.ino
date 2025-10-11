@@ -82,7 +82,7 @@ void calculate(const String& input) {
         return;
     }
 
-    char op = input.charAT(firstSpace + 1);
+    char op = input.charAt(firstSpace + 1);
     String num1Str = input.substring(0, firstSpace);
     String num2Str = input.substring(secondSpace + 1);
 
