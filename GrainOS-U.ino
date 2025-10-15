@@ -71,7 +71,7 @@ void writeFile(char* input) {
 
 void readFile(const char* name) {
     for (const File& file : files) {
-        if (file.used && file.name == name) {
+        if (file.used && (strcmp(file.name, name) == 0)) {
             Serial.println(F("Content of "));
             Serial.println(name);
             Serial.println(F(": "));
@@ -84,7 +84,7 @@ void readFile(const char* name) {
 
 void deleteFile(const char* name) {
     for (File& file : files) {
-        if (file.used && file.name == name) {
+        if (file.used && (strcmp(file.name, name) == 0)) {
             file.used = false;  // Marks files as deleted
             Serial.println(F("Deleted file: "));
             Serial.println(name);
