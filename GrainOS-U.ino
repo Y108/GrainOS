@@ -98,7 +98,6 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
     Serial.println(F("Available commands:"));
     Serial.println(F("  clear - Clears the screen"));
     Serial.println(F("  echo <message> - Prints the message"));
-    Serial.println(F("  format(\"text,text,text\") - Formats input"));
     Serial.println(F("  write <filename> <content> - Writes content to a file"));
     Serial.println(F("  read <filename> - Reads and prints the content of a file"));
     Serial.println(F("  delete <filename> - Deletes a file"));
@@ -310,7 +309,6 @@ void processCommand(char* input) {
         case 0x00656368: //echo
             Serial.println(parameters);
             break;
-        //case 0x00666F72: //format
         case 0x00777269: //write
             writeFile(input);
             break;
@@ -345,12 +343,6 @@ void processCommand(char* input) {
             Serial.println(input); //changed this because I realized It makes more sense
             break;
     }
-
-       /*else if (input.startsWith("format(") && input.endsWith(")")) {
-        input = input.substring(7, input.length() - 1);
-        input.replace("\"", "");
-        input.replace(",", " ");
-        Serial.println(input);*/
 }
 
 void setup() {
