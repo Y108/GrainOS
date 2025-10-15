@@ -265,7 +265,7 @@ void processCommand(const String& input) {
 void setup() {
     Serial.begin(9600);
     delay(500);
-    Serial.println("Welcome to GrainOS 1.8.3, `help` for a list of commands");
+    Serial.println("Welcome to GrainOS 1.8.4, `help` for a list of commands");
 }
 
 void loop() { //the script runner :)
