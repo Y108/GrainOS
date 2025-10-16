@@ -113,16 +113,22 @@ void showHelp() { //I think this is fairly self explanatory, but still, making s
 void calculate(char* input) {
     char *num1_str, *num2_str, *op_str;
     char  op;
-    double result;
+    float result;
 
-    if ((num1_str = strtok(input, " ")) == NULL) goto bad_input_calc;
+    if ((num1_str = strtok(input, " ")) == NULL){
+        Serial.println(F("Invalid input"));
+        return;
+    };
 
     if ((op_str = strtok(NULL, " ")) == NULL || strlen(op_str) != 1){
         Serial.println(F("Operator missing or greater than a single character!"));
         return;
     }
 
-    if ((num2_str = strtok(NULL, " ")) == NULL) goto bad_input_calc;
+    if ((num2_str = strtok(NULL, " ")) == NULL){
+        Serial.println(F("Invalid input"));
+        return;
+    };
 
     if (strtok(NULL, " ") != NULL){
         Serial.println(F("Too many arguments!"));
@@ -130,12 +136,12 @@ void calculate(char* input) {
     }
     char* end_ptr;
 
-    double num1 = strtod(num1_str, &end_ptr);
+    float num1 = (float) strtod(num1_str, &end_ptr);
     if (*end_ptr != '\0'){
         Serial.println(F("Invalid first number format!"));
     }
 
-    double num2 = strtod(num2_str, &end_ptr);
+    float num2 = (double) strtod(num2_str, &end_ptr);
     if (*end_ptr != '\0'){
         Serial.println(F("Invalid second number format!"));
     }
@@ -163,10 +169,11 @@ void calculate(char* input) {
     }
 
     Serial.println(String(result));
-
+    /*{ 
     bad_input_calc:
         Serial.println(F("Usage: calc <number> <operator> <number>"));
         return;
+    }*/
 }
 
 void runScript(const char* name) { //script interpreter!
